@@ -1,10 +1,9 @@
 #include "poweroutput.h"
 
-PowerOutput::PowerOutput()
-{
-}
+using namespace std;
 
 
 void PowerOutput::Output(qint32 power)
 {
+	cout << power << endl;
 }

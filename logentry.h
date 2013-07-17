@@ -8,8 +8,6 @@
 class LogEntry
 {
 	public:
-		LogEntry();
-
 		qint32 Id;
 		qint64 Date;
 		QString Message;

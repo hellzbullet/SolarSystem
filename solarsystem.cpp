@@ -5,11 +5,11 @@ using namespace std;
 SolarSystem::SolarSystem(QObject *parent) : QObject(parent)
 {
 	db = new SystemDatabase(this);
-
-	programRunning = true;
 	reader = new PowerReader(this);
 
-	connect(reader, SIGNAL(PowerChanged(qint32), this, SLOT(PowerChanged(qint32));
+	programRunning = true;
+
+	connect(reader, SIGNAL(PowerChanged(qint32)), this, SLOT(PowerChanged(qint32)));
 }
 
 SolarSystem::~SolarSystem()
@@ -21,8 +21,8 @@ void SolarSystem::Run()
 	Logger::Instance()->Log("Starting program!");
 
 	while(programRunning) {
-
-		QThread::sleep(10000);
+		reader->ReadPower();
+		QThread::sleep(10);
 	}
 
 	Logger::Instance()->Log("Shutting down program!");

@@ -3,8 +3,18 @@
 
 #include <QObject>
 #include "QString"
+#include "QtNetwork/QNetworkAccessManager"
+#include "QtNetwork/QNetworkReply"
+#include "QtNetwork/QNetworkRequest"
+#include "QIODevice"
+#include "QEventLoop"
+#include "QUrl"
+#include "QRegExp"
+#include "QRegularExpression"
 #include "logger.h"
 #include "ipfinder.h"
+#include "iostream"
+#include "QDebug"
 
 
 class PowerReader : public QObject
@@ -17,17 +27,19 @@ class PowerReader : public QObject
 
 	private:
 		QString currentIP;
+		QNetworkAccessManager* networkManager;
 
 		Logger* logger;
 		IPFinder* ipFinder;
 
+		QString normalize(const QString str);
+
 	signals:
 		void PowerChanged(qint32 newPower);
-		void ReadingCancelled();
 
 	public slots:
 		void IPFound(QString IP);
-		
+		void downloadFinished(QNetworkReply* reply);
 };
 
 #endif // POWERREADER_H

@@ -2,6 +2,7 @@
 #define POWEROUTPUT_H
 
 #include "QtGlobal"
+#include "iostream"
 
 class PowerOutput
 {

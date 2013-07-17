@@ -1,7 +1,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "QObject"
 #include "QString"
 #include "QFile"
 #include "QDateTime"
@@ -13,28 +12,23 @@ enum class LogType {
 	ERROR
 };
 
-class Logger : public QObject
+class Logger
 {
-		Q_OBJECT
 	public:
+		Logger();
+
 		static Logger* Instance();
 		static void Dispose();
 
-		static const QString LoggerDirectoryPath = "Log/";
-		static const QString LoggerFilePath = "log";
-		static const QString LoggerPath = LoggerDirectoryPath + LoggerFilePath;
-
+		void SetUpFiles();
 		void Log(QString message, LogType type = LogType::NORMAL);
 
+		static const QString LoggerDirectoryPath;
+		static const QString LoggerFilePath;
+		static const QString LoggerPath;
+
 	private:
-		explicit Logger(QObject *parent = 0);
-
 		static Logger* logger;
-
-	signals:
-
-	public slots:
-
 };
 
 #endif // LOGGER_H

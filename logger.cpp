@@ -1,19 +1,25 @@
 #include "logger.h"
 
-Logger::Logger(QObject *parent) : QObject(parent)
+const QString Logger::LoggerDirectoryPath = "Log/";
+const QString Logger::LoggerFilePath = "log";
+const QString Logger::LoggerPath = LoggerDirectoryPath + LoggerFilePath;
+
+Logger::Logger()
 {
 	SetUpFiles();
 }
 
 void Logger::SetUpFiles()
 {
-	if (!QDir::exists(LoggerDirectoryPath)) {
-		QDir::mkPath(LoggerDirectoryPath);
+	QDir dir(LoggerDirectoryPath);
+	if (!dir.exists(LoggerDirectoryPath)) {
+		dir.mkpath(LoggerDirectoryPath);
 	}
 
-	if (!QFile::exists(LoggerPath)) {
-		if(!QFile::open(QFile::Text | QFile::ReadWrite)) {
-
+	QFile file(LoggerPath);
+	if (!file.exists(LoggerPath)) {
+		if(!file.open(QFile::Text | QFile::ReadWrite)) {
+			// TODO LOG TO DATABASE
 		}
 	}
 }
@@ -22,10 +28,10 @@ void Logger::Log(QString message, LogType type)
 {
 	QString strType;
 	switch(type) {
-		case ERROR:
+		case LogType::ERROR:
 			strType = "ERROR";
 			break;
-		case NORMAL:
+		case LogType::NORMAL:
 			strType = "NORMAL";
 			break;
 		default:
@@ -34,12 +40,12 @@ void Logger::Log(QString message, LogType type)
 
 	QString strToAppend = QString::number(QDateTime::currentMSecsSinceEpoch());
 
-	if (type == LogType.ERROR) strToAppend += " " + strType;
+	if (type == LogType::ERROR) strToAppend += " " + strType;
 	strToAppend += " " + message + "\n";
 
 	QFile file(LoggerPath);
-	if (file.open(QFile::ReadWrite)) {
-		QTextStream s(&file, QFile::ReadWrite | QFile::Append);
+	if (file.open(QFile::ReadWrite | QFile::Append | QFile::Text)) {
+		QTextStream s(&file);
 		s << strToAppend;
 	}
 	// TODO ADD TO DATABASE
@@ -47,7 +53,7 @@ void Logger::Log(QString message, LogType type)
 
 Logger* Logger::Instance()
 {
-	if (logger == null) {
+	if (logger == NULL) {
 		logger = new Logger();
 	}
 	return logger;
@@ -59,5 +65,7 @@ void Logger::Dispose()
 		delete logger;
 	}
 }
+
+Logger* Logger::logger = new Logger();
 
 

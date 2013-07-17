@@ -4,6 +4,7 @@
 #include <QObject>
 #include "systemdatabase.h"
 #include "iostream"
+#include "QDebug"
 #include "QThread"
 #include "logger.h"
 #include "powerreader.h"

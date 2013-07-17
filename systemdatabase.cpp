@@ -15,12 +15,6 @@ SystemDatabase::SystemDatabase(QObject *parent) : QObject(parent)
 		cout << "Database opened: " << db->isOpen() << endl;
 	}
 
-	QStringList drivers = QSqlDatabase::drivers();
-
-	for (int i = 0; i < drivers.length(); i++) {
-		cout << drivers[i].toUtf8().constData() << endl;
-	}
-
 	Init();
 }
 

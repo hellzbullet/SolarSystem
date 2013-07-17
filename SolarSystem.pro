@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core sql
+QT       += core sql network
 
 QT       -= gui
 
@@ -36,5 +36,3 @@ HEADERS += \
     ipfinder.h \
     logger.h \
     poweroutput.h
-
-OTHER_FILES +=
