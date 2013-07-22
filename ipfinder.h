@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "QString"
+#include "QDebug"
+#include "QThread"
 
 class IPFinder : public QObject
 {
@@ -14,7 +16,6 @@ class IPFinder : public QObject
 		
 	signals:
 		void IPFound(QString newIP);
-		void finished();
 
 	public slots:
 		

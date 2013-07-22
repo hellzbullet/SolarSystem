@@ -8,6 +8,8 @@
 class Device
 {
 	public:
+		Device();
+
 		qint32 Id;
 		QString Name;
 		qint32 DevicePower;

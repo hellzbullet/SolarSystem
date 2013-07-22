@@ -8,7 +8,7 @@ PowerReader::PowerReader(QObject *parent) : QObject(parent)
 	ipFinder = new IPFinder(this);
 	networkManager = new QNetworkAccessManager(this);
 
-	currentIP = "http://192.168.1.168/home.htm";
+	currentIP = "";
 
 	connect(ipFinder, SIGNAL(IPFound(QString)), this, SLOT(IPFound(QString)));
 	connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(downloadFinished(QNetworkReply*)));
@@ -18,19 +18,11 @@ void PowerReader::ReadPower()
 {
 	if (currentIP == "") {
 		ipFinder->findIP();
-
-		QEventLoop loop;
-		connect(ipFinder, SIGNAL(finished()), &loop, SLOT(quit()));
-		loop.exec();
-
-		if (currentIP == "") return;
 	}
 
 	auto reply = networkManager->get(QNetworkRequest(QUrl(currentIP)));
 
-	QEventLoop loop;
-	connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
-	loop.exec();
+	SolarSystemUtils::waitForAsync(reply, SIGNAL(finished()));
 }
 
 void PowerReader::IPFound(QString IP)

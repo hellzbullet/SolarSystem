@@ -9,6 +9,10 @@
 #include "logger.h"
 #include "powerreader.h"
 #include "poweroutput.h"
+#include "webservice.h"
+#include "signal.h"
+#include "QMutex"
+#include "QWaitCondition"
 
 class SolarSystem : public QObject
 {
@@ -18,10 +22,14 @@ class SolarSystem : public QObject
 		~SolarSystem();
 
 		void Run();
+		void Stop();
 
 	private:
 		SystemDatabase* db;
 		PowerReader*	reader;
+		WebService*		service;
+		QMutex*			mutex;
+		QWaitCondition* waitCondition;
 
 		bool programRunning;
 

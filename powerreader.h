@@ -15,7 +15,7 @@
 #include "ipfinder.h"
 #include "iostream"
 #include "QDebug"
-
+#include "solarsystemutils.h"
 
 class PowerReader : public QObject
 {

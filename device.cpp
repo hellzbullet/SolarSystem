@@ -1,5 +1,13 @@
 #include "device.h"
 
+Device::Device()
+{
+	IsRunning = false;
+	StartTime = -1;
+	IsUserControlled = false;
+	RunTime = 0;
+}
+
 void Device::Start()
 {
 	if (IsRunning == true) return;

@@ -24,7 +24,9 @@ SOURCES += main.cpp \
     powerreader.cpp \
     ipfinder.cpp \
     logger.cpp \
-    poweroutput.cpp
+    poweroutput.cpp \
+    solarsystemutils.cpp \
+    webservice.cpp
 
 HEADERS += \
     device.h \
@@ -35,4 +37,6 @@ HEADERS += \
     powerreader.h \
     ipfinder.h \
     logger.h \
-    poweroutput.h
+    poweroutput.h \
+    solarsystemutils.h \
+    webservice.h
