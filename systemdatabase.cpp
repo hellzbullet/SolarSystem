@@ -4,22 +4,20 @@ using namespace std;
 
 SystemDatabase::SystemDatabase(QObject *parent) : QObject(parent)
 {
-	db = &QSqlDatabase::addDatabase("QSQLITE");
+	db = QSqlDatabase::addDatabase("QSQLITE");
 
-	#ifdef Q_OS_LINUX    // NOTE: We have to store database file into user home folder in Linux
+	#ifdef Q_OS_LINUX
 		QString path(QDir::home().path());
 		path.append(QDir::separator()).append("solarsystem.db.sqlite");
 		path = QDir::toNativeSeparators(path);
-		db->setDatabaseName(path);
-	#else    // NOTE: File exists in the application private folder, in Symbian Qt implementation
-		db->setDatabaseName("solarsystem.db.sqlite");
+		db.setDatabaseName(path);
+	#else
+		db.setDatabaseName("solarsystem.db.sqlite");
 	#endif
 
-	if (!db->open()) {
+	if (!db.open()) {
 		qDebug() << "Could not open database!";
-		qDebug() << db->lastError();
-	} else {
-		qDebug() << "Database opened: " << db->isOpen();
+		qDebug() << db.lastError();
 	}
 
 	Init();
@@ -27,7 +25,6 @@ SystemDatabase::SystemDatabase(QObject *parent) : QObject(parent)
 
 SystemDatabase::~SystemDatabase()
 {
-	delete db;
 }
 
 void SystemDatabase::insertPower(qint32 power, qint32 usedPower)
@@ -35,10 +32,12 @@ void SystemDatabase::insertPower(qint32 power, qint32 usedPower)
 	QString query = QString("INSERT INTO power (PowerValue, UsedPowerValue, Date) VALUES (%1, %2, %3)").arg(power).arg(usedPower).arg(QDateTime::currentMSecsSinceEpoch());
 	QSqlQuery sqlQuery;
 	sqlQuery.exec(query);
+
+	qDebug() << query;
 }
 
 void SystemDatabase::Init() {
-	if (!db->isOpen()) return;
+	if (!db.isOpen()) return;
 
 	QString query1 = "CREATE TABLE IF NOT EXISTS devices (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, DevicePower INTEGER NOT NULL, IsRunning INTEGER NOT NULL, IsUserControlled INTEGER NOT NULL, StartTime INTEGER NOT NULL, RunTime INTEGER NOT NULL, Pin INTEGER NOT NULL, Priority INTEGER NOT NULL)";
 	QString query2 = "CREATE TABLE IF NOT EXISTS logs (Id INTEGER PRIMARY KEY AUTOINCREMENT, Message TEXT NOT NULL, Date INTEGER NOT NULL, Type TEXT NOT NULL)";
@@ -52,7 +51,7 @@ void SystemDatabase::Init() {
 
 QList<Device*>* SystemDatabase::getDevices()
 {
-	if (!db->isOpen()) return NULL;
+	if (!db.isOpen()) return NULL;
 
 	QList<Device*>* list = new QList<Device*>();
 
@@ -84,7 +83,7 @@ QList<Device*>* SystemDatabase::getDevices()
 
 void SystemDatabase::updateDevices(QList<Device*>* devices)
 {
-	if (!db->isOpen()) return;
+	if (!db.isOpen()) return;
 
 	for (int i = 0; i < devices->length(); ++i) {
 		Device* device = devices->at(i);
@@ -94,24 +93,11 @@ void SystemDatabase::updateDevices(QList<Device*>* devices)
 }
 
 
-void SystemDatabase::insertLog(QString message, LogType type)
+void SystemDatabase::insertLog(QString message, QString type)
 {
-	if (!db->isOpen()) return;
+	if (!db.isOpen()) return;
 
-	QString strType;
-	switch (type) {
-		case LogType::ERROR:
-			strType = "ERROR";
-			break;
-		case LogType::NORMAL:
-			strType = "NORMAL";
-			break;
-		default:
-			strType = "UNKNOWN";
-			break;
-	}
-
-	QString query = QString("INSERT INTO logs (Message, Type, Date) VALUES ('%1', '%2', %3)").arg(message).arg(strType).arg(QDateTime::currentMSecsSinceEpoch());
+	QString query = QString("INSERT INTO logs (Message, Type, Date) VALUES ('%1', '%2', %3)").arg(message).arg(type).arg(QDateTime::currentMSecsSinceEpoch());
 	executeQuery(query);
 }
 

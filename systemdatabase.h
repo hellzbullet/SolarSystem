@@ -14,7 +14,6 @@
 #include "iostream"
 #include "QDebug"
 #include "device.h"
-#include "logger.h"
 #include "QDir"
 
 class SystemDatabase : public QObject
@@ -25,7 +24,7 @@ class SystemDatabase : public QObject
 		~SystemDatabase();
 
 		void insertPower(qint32 power, qint32 usedPower);
-		void insertLog(QString message, LogType type = LogType::NORMAL);
+		void insertLog(QString message, QString type);
 		void updateDevices(QList<Device*>* devices);
 
 		QList<Device*>* getDevices();
@@ -37,7 +36,7 @@ class SystemDatabase : public QObject
 		void Init();
 		void executeQuery(QString query);
 
-		QSqlDatabase* db;
+		QSqlDatabase db;
 
 		static SystemDatabase* database;
 

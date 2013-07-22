@@ -1,11 +1,10 @@
 #include "poweroutput.h"
 
-using namespace std;
-
-
 void PowerOutput::Output(qint32 power)
 {
+	QList<Device*>* optimalDevices = getOptimalDevices(SystemDatabase::Instance()->getDevices(), power);
 
+	SystemDatabase::Instance()->insertPower(power, powerSum(optimalDevices));
 }
 
 QList<Device*>* PowerOutput::getOptimalDevices(QList<Device*>* devices, qint32 power)

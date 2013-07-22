@@ -1,10 +1,7 @@
 #include "solarsystem.h"
 
-using namespace std;
-
 SolarSystem::SolarSystem(QObject *parent) : QObject(parent)
 {
-	db				= new SystemDatabase(this);
 	reader			= new PowerReader(this);
 	service			= new WebService(this);
 	mutex			= new QMutex();
@@ -13,18 +10,22 @@ SolarSystem::SolarSystem(QObject *parent) : QObject(parent)
 	programRunning = true;
 
 	connect(reader, SIGNAL(PowerChanged(qint32)), this, SLOT(PowerChanged(qint32)));
+
 }
 
 SolarSystem::~SolarSystem()
 {
 	delete mutex;
 	delete waitCondition;
+
+	dispose();
 }
 
 void SolarSystem::Run()
 {
 	Logger::Instance()->Log("Starting program!");
 
+	qint32 cycle = 1;
 	while(programRunning) {
 		reader->ReadPower();
 		mutex->lock ();
@@ -38,7 +39,6 @@ void SolarSystem::Run()
 
 void SolarSystem::PowerChanged(qint32 newPower)
 {
-	qDebug() << newPower;
 	PowerOutput::Output(newPower);
 }
 

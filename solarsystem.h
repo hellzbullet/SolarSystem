@@ -25,7 +25,6 @@ class SolarSystem : public QObject
 		void Stop();
 
 	private:
-		SystemDatabase* db;
 		PowerReader*	reader;
 		WebService*		service;
 		QMutex*			mutex;

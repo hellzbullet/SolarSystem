@@ -23,6 +23,7 @@ void WebService::readDatagram()
 
 		socket->readDatagram(datagram.data(), datagram.size());
 
+		socket->userData (5);
 		qDebug() << QString(datagram);
 	}
 }

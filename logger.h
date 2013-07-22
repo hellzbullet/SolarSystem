@@ -6,6 +6,7 @@
 #include "QDateTime"
 #include "QDir"
 #include "QTextStream"
+#include "systemdatabase.h"
 
 enum class LogType {
 	NORMAL,
@@ -18,6 +19,8 @@ class Logger
 		Logger();
 
 		static Logger* Instance();
+		static QString TypeString(LogType type);
+
 		static void Dispose();
 
 		void SetUpFiles();

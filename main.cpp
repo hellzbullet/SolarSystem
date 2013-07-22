@@ -8,11 +8,10 @@
 void signalHandler(int signum)
 {
 	qDebug() << "Caught " << signum;
-	exit(signum);
 }
 
 void setUpHandlers() {
-	signal(SIGTERM, signalHandler);
+	//signal(SIGTERM, signalHandler);
 	//signal(SIGABRT, signalHandler);
 	//signal(SIGABRT_COMPAT, signalHandler);
 	//signal(SIGBREAK, signalHandler);
@@ -30,10 +29,6 @@ int main(int argc, char *argv[])
 
 	SolarSystem* s = new SolarSystem();
 	s->Run();
-
-	delete s;
-
-	Logger::Dispose();
 
 	return a.exec();
 }
