@@ -6,6 +6,7 @@
 #include "QList"
 #include "device.h"
 #include "QDebug"
+#include "systemdatabase.h"
 
 class PowerOutput
 {

@@ -32,40 +32,21 @@ SystemDatabase::~SystemDatabase()
 
 void SystemDatabase::insertPower(qint32 power, qint32 usedPower)
 {
+	QString query = QString("INSERT INTO power (PowerValue, UsedPowerValue, Date) VALUES (%1, %2, %3)").arg(power).arg(usedPower).arg(QDateTime::currentMSecsSinceEpoch());
+	QSqlQuery sqlQuery;
+	sqlQuery.exec(query);
 }
 
 void SystemDatabase::Init() {
 	if (!db->isOpen()) return;
 
-	QSqlQuery sqlQuery(*db);
-	if (!sqlQuery.exec("DROP TABLE devices")) {
-		qDebug() << "Couldn't drop table devices";
-	}
-	if (!sqlQuery.exec("DROP TABLE logs")) {
-		qDebug() << "Couldn't drop table logs";
-	}
-	if (!sqlQuery.exec("DROP TABLE power")) {
-		qDebug() << "Couldn't drop table power";
-	}
-
 	QString query1 = "CREATE TABLE IF NOT EXISTS devices (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT NOT NULL, DevicePower INTEGER NOT NULL, IsRunning INTEGER NOT NULL, IsUserControlled INTEGER NOT NULL, StartTime INTEGER NOT NULL, RunTime INTEGER NOT NULL, Pin INTEGER NOT NULL, Priority INTEGER NOT NULL)";
 	QString query2 = "CREATE TABLE IF NOT EXISTS logs (Id INTEGER PRIMARY KEY AUTOINCREMENT, Message TEXT NOT NULL, Date INTEGER NOT NULL, Type TEXT NOT NULL)";
 	QString query3 = "CREATE TABLE IF NOT EXISTS power (Id INTEGER PRIMARY KEY AUTOINCREMENT, Date INTEGER NOT NULL, PowerValue INTEGER NOT NULL, UsedPowerValue INTEGER NOT NULL)";
 
-	if (!sqlQuery.exec(query1)) {
-		qDebug() << "Couldn't create table devices";
-	}
-	if (!sqlQuery.exec(query2)) {
-		qDebug() << "Couldn't create table logs";
-	}
-	if (!sqlQuery.exec(query3)) {
-		qDebug() << "Couldn't create table power";
-	}
-
-	qDebug() << sqlQuery.lastError();
-
-	auto tables = db->tables();
-	qDebug() << "Length: " << tables.length() << endl;
+	executeQuery(query1);
+	executeQuery(query2);
+	executeQuery(query3);
 }
 
 
@@ -75,7 +56,7 @@ QList<Device*>* SystemDatabase::getDevices()
 
 	QList<Device*>* list = new QList<Device*>();
 
-	QString query = "SELECT id, devicePower, isRunning, isUserControlled, startTime, name, pin, priority, runTime FROM devices";
+	QString query = "SELECT * FROM devices";
 	QSqlQuery sqlQuery;
 
 	if (sqlQuery.exec(query)) {
@@ -83,15 +64,15 @@ QList<Device*>* SystemDatabase::getDevices()
 		while (sqlQuery.next()) {
 			Device* d = new Device();
 
-			d->DevicePower == sqlQuery.value(record.indexOf("devicePower"));
-			d->Id == sqlQuery.value(record.indexOf("id"));
-			d->IsRunning == sqlQuery.value(record.indexOf("isRunning"));
-			d->IsUserControlled == sqlQuery.value(record.indexOf("isUserControlled"));
-			d->StartTime == sqlQuery.value(record.indexOf("startTime"));
-			d->RunTime == sqlQuery.value(record.indexOf("runTime"));
-			d->Pin == sqlQuery.value(record.indexOf("pin"));
-			d->Priority == sqlQuery.value(record.indexOf("priority"));
-			d->Name == sqlQuery.value(record.indexOf("name"));
+			d->DevicePower == sqlQuery.value(record.indexOf("DevicePower"));
+			d->Id == sqlQuery.value(record.indexOf("Id"));
+			d->IsRunning == sqlQuery.value(record.indexOf("IsRunning"));
+			d->IsUserControlled == sqlQuery.value(record.indexOf("IsUserControlled"));
+			d->StartTime == sqlQuery.value(record.indexOf("StartTime"));
+			d->RunTime == sqlQuery.value(record.indexOf("RunTime"));
+			d->Pin == sqlQuery.value(record.indexOf("Pin"));
+			d->Priority == sqlQuery.value(record.indexOf("Priority"));
+			d->Name == sqlQuery.value(record.indexOf("Name"));
 
 			list->append(d);
 		}
@@ -107,9 +88,8 @@ void SystemDatabase::updateDevices(QList<Device*>* devices)
 
 	for (int i = 0; i < devices->length(); ++i) {
 		Device* device = devices->at(i);
-		QString query = QString("UPDATE devices SET isRunning = %1, runTime = %2, startTime = %3 WHERE id = %4").arg(QString(device->IsRunning), QString::number(device->RunTime), QString::number(device->StartTime), QString::number(device->Id));
-		QSqlQuery sqlQuery;
-		sqlQuery.exec(query);
+		QString query = QString("UPDATE devices SET IsRunning = %1, RunTime = %2, StartTime = %3 WHERE Id = %4").arg(device->IsRunning).arg(device->RunTime).arg(device->StartTime).arg(device->Id);
+		executeQuery(query);
 	}
 }
 
@@ -131,7 +111,28 @@ void SystemDatabase::insertLog(QString message, LogType type)
 			break;
 	}
 
-	QString query = QString("INSERT INTO logs (message, type, date) VALUES (%1, %2, %3)").arg(message, strType, QString::number(QDateTime::currentMSecsSinceEpoch()));
+	QString query = QString("INSERT INTO logs (Message, Type, Date) VALUES ('%1', '%2', %3)").arg(message).arg(strType).arg(QDateTime::currentMSecsSinceEpoch());
+	executeQuery(query);
+}
+
+void SystemDatabase::executeQuery(QString query) {
 	QSqlQuery sqlQuery;
 	sqlQuery.exec(query);
 }
+
+SystemDatabase* SystemDatabase::Instance()
+{
+	if (database == NULL) {
+		database = new SystemDatabase();
+	}
+	return database;
+}
+
+void SystemDatabase::Dispose()
+{
+	if (database != NULL) {
+		delete database;
+	}
+}
+
+SystemDatabase* SystemDatabase::database = new SystemDatabase();

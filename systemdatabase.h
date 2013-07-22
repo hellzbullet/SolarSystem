@@ -30,10 +30,16 @@ class SystemDatabase : public QObject
 
 		QList<Device*>* getDevices();
 
+		static SystemDatabase* Instance();
+		static void Dispose();
+
 	private:
 		void Init();
+		void executeQuery(QString query);
 
 		QSqlDatabase* db;
+
+		static SystemDatabase* database;
 
 	signals:
 		

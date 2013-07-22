@@ -17,7 +17,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     device.cpp \
-    logentry.cpp \
     power.cpp \
     solarsystem.cpp \
     systemdatabase.cpp \
@@ -30,7 +29,6 @@ SOURCES += main.cpp \
 
 HEADERS += \
     device.h \
-    logentry.h \
     power.h \
     solarsystem.h \
     systemdatabase.h \

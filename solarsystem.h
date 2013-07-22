@@ -33,6 +33,8 @@ class SolarSystem : public QObject
 
 		bool programRunning;
 
+		void dispose();
+
 	signals:
 		
 	public slots:

@@ -32,6 +32,8 @@ void SolarSystem::Run()
 	}
 
 	Logger::Instance()->Log("Shutting down program!");
+
+	dispose();
 }
 
 void SolarSystem::PowerChanged(qint32 newPower)
@@ -43,4 +45,10 @@ void SolarSystem::PowerChanged(qint32 newPower)
 void SolarSystem::Stop() {
 	programRunning = false;
 	waitCondition->wakeAll();
+}
+
+void SolarSystem::dispose()
+{
+	Logger::Dispose();
+	SystemDatabase::Dispose();
 }
